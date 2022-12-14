@@ -37,14 +37,14 @@ class Album extends Component {
           ? (<Loading />)
           : (
             <div>
-              <img src={albumsInfo.artworkUrl100} alt="album-cover" />
+              <img src={ albumsInfo.artworkUrl100 } alt="album-cover" />
               <h4 data-testid="album-name">
                 {albumsInfo.collectionName}
               </h4>
               <h5 data-testid="artist-name">
                 {albumsInfo.artistName}
               </h5>
-              <MusicCard musics={musics} />
+              <MusicCard musics={ musics } />
             </div>
           )}
       </div>
