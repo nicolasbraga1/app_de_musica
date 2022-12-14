@@ -16,9 +16,11 @@ class Album extends Component {
     const minTwo = 2;
     const minThree = 3;
     const { history: { location } } = this.props;
-    const musicArray = location.pathname.split('/', minThree);
+    const musicArray = location.pathname
+      .split('/', minThree);
     const musics = await getMusic(musicArray[minTwo]);
-    const newArray = musics.filter((song, index) => index !== 0);
+    const newArray = musics
+      .filter((song, index) => index !== 0);
     this.setState({
       albumsInfo: musics[0],
       musics: newArray,
@@ -34,12 +36,16 @@ class Album extends Component {
         {loadingPage
           ? (<Loading />)
           : (
-            <>
-              <img src={ albumsInfo.artworkUrl100 } alt="album-cover" />
-              <h4 data-testid="album-name">{ albumsInfo.collectionName }</h4>
-              <h5 data-testid="artist-name">{ albumsInfo.artistName }</h5>
-              <MusicCard musics={ musics } />
-            </>
+            <div>
+              <img src={albumsInfo.artworkUrl100} alt="album-cover" />
+              <h4 data-testid="album-name">
+                {albumsInfo.collectionName}
+              </h4>
+              <h5 data-testid="artist-name">
+                {albumsInfo.artistName}
+              </h5>
+              <MusicCard musics={musics} />
+            </div>
           )}
       </div>
     );
