@@ -44,7 +44,7 @@ class Album extends Component {
               <h5 data-testid="artist-name">
                 {albumsInfo.artistName}
               </h5>
-              <MusicCard musics={ musics } />
+              {musics.map((song, index) => <MusicCard music={ song } key={ index } />)}
             </div>
           )}
       </div>
