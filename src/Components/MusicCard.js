@@ -1,72 +1,66 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
+import { addSong, getFavoriteSongs, removeSong } from '../services/favoriteSongsAPI';
 import Loading from '../Pages/Loading';
 
 class MusicCard extends Component {
-  constructor() {
-    super();
-    this.state = {
-      favorite: false,
-      loading: false,
-    };
-    this.checkFavorite = this.checkFavorite.bind(this);
-    this.addFavorite = this.addFavorite.bind(this);
-  }
-
-  async componentDidMount() {
-    this.setState({
-      favorite: await this.favorite(),
-    });
-  }
-
-  favorite = async () => {
-    const { music: { trackId } } = this.props;
-    const local = await getFavoriteSongs();
-    return local.map((music) => music.trackId).includes(trackId);
+  state = {
+    checkbox: false,
+    loading: false,
   };
 
-  addFavorite(music) {
-    this.setState({ loading: true }, async () => {
-      await addSong(music);
-      this.setState({ loading: false });
+  async componentDidMount() {
+    const { trackId } = this.props;
+    const favorites = await getFavoriteSongs();
+    this.setState({
+      checkbox: favorites.some((song) => song.trackId === trackId),
     });
   }
 
-  checkFavorite({ target: { checked } }) {
-    if (checked) { this.setState({ favorite: checked }); }
-  }
+  handleChange = ({ target }) => {
+    const value = target.checked;
+    const { songData } = this.props;
+    this.setState({
+      checkbox: value,
+      loading: true,
+    }, async () => {
+      await addSong(songData);
+      this.setState({
+        loading: false,
+      });
+      if (!value) {
+        await removeSong(songData);
+      }
+    });
+  };
 
   render() {
-    const { music } = this.props;
-    const { favorite, loading } = this.state;
+    const { previewURL, songName, trackId } = this.props;
+    const { checkbox, loading } = this.state;
     return (
       <div>
-        {loading
-          ? (<Loading />)
+        { loading ? <Loading />
           : (
-            <ul>
-              <li>{music.trackName}</li>
-              <audio data-testid="audio-component" src={ music.previewUrl } controls>
+            <>
+              <p>{songName}</p>
+              <audio data-testid="audio-component" src={ previewURL } controls>
                 <track kind="captions" />
                 O seu navegador não suporta o elemento
-                {' '}
-                {' '}
                 <code>audio</code>
                 .
               </audio>
-              <label htmlFor="favorite">
+              <label htmlFor="favoriteSong">
+                {' '}
+                Favorita
                 <input
                   type="checkbox"
-                  name="favorite"
-                  data-testid={ `checkbox-music-${music.trackId}` }
-                  checked={ favorite }
-                  onChange={ this.checkFavorite }
-                  onClick={ () => this.addFavorite(music) }
+                  id="favoriteSong"
+                  onChange={ this.handleChange }
+                  checked={ checkbox }
+                  data-testid={ `checkbox-music-${trackId}` }
                 />
-                Favorita
               </label>
-            </ul>
+            </>
           )}
       </div>
     );
