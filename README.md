@@ -1,4 +1,4 @@
-English version below
+<h1 align="center"> App de Música </h1>
 
 Olá e boas vindas ao projeto App de música.
 Com ele você é capaz de ouvir uma prévia de diversas músicas, além de marcar quais são as suas favoritas para fácil acesso depois.
